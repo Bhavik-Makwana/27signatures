@@ -321,8 +321,8 @@ function showModal(title, text, index) {
     modalText.textContent = text;
     
     modal.style.display = 'block';
-    console.log(`assets/NYC_${index}.jpg`);
-    modalImage.src = `assets/NYC_${index}.jpg`;
+    console.log(`assets/small_NYC_${index}.jpg`);
+    modalImage.src = `assets/small_NYC_${index}.jpg`;
     // Trigger reflow to ensure the transition works
     void modal.offsetWidth;
     
