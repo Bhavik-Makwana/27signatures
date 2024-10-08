@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NYC Signature Gallery</title>
+
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gallery-item {
+            position: relative;
+        }
+
+        .icon {
+            position: absolute;
+            font-size: 24px;
+            color: white;
+            /* background-color: rgba(0, 0, 0, 0.5); */
+            padding: 5px;
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        .expand {
+            top: 10px;
+            right: 10px;
+        }
+
+        .description {
+            display: none;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            /* background-color: rgba(0, 0, 0, 0.7); */
+            /* color: white; */
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1><a href="index.html" style="text-decoration: none; color: inherit;">27<span
+                        style="font-family: 'Brush Script MT', cursive; font-size: 36px;">Signatures</span></a></h1>
+            <nav>
+                <ul>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <h2 style="font-family: 'Courier New', monospace;">Gallery</h2>
+    <div class="gallery" id="signatures-gallery"></div>
+    <div class="pagination" id="signatures-pagination"></div>
+
+    <div id="signatureModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Signature Details</h2>
+            <div id="modalImage">
+                <!-- Placeholder for image -->
+                <img id="modalImageTag" src="" alt="Signature Image">
+            </div>
+            <p id="modalText">Default text about the signature.</p>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            const signatures = [
+                { src: 'assets/NYC_1.jpg', title: '#1 Flat Iron', desc: 'The start of it all. Got my first signature from a worker at the T-mobile shop in the building, I told her it was for an art project.' },
+                { src: 'assets/NYC_2.jpg', title: '#2 #3 #4 Milk Bar', desc: 'One of the first signatures I got, they were a bit skeptical with limited signatures here, spoke to 3 employees, and all 3 signed. Amazingly they had GF treats, turns out American childhood nostalgia doesnt translate well to my palate' },
+                { src: 'assets/NYC_3.jpg', title: '#4 Empire State Building', desc: 'So imposing up front. I got a signature from the guard in the lobby. Nice guy but he was definitely suspect of me haha.' },
+                { src: 'assets/NYC_4.jpg', title: '#5 Sarges Deli', desc: 'My local deli during the trip in Murray Hill. I was craving some New York deli and this was the first place I found. Brisket and mash, so good. Signed by a sweet old lady who served me there.' },
+                { src: 'assets/NYC_5.jpg', title: 'L1 Chrysler', desc: 'Didnt get a chance to stop by her but saw it on the morning commute to the office.' },
+                { src: 'assets/NYC_6.jpg', title: 'L2 Vanderbilt', desc: 'Didnt get a chance to stop by her but saw it on the morning commute to the office.' },
+                { src: 'assets/NYC_7.jpg', title: '#6 Grand Central Station', desc: 'Very impressive inside, one of my favourite buildings I saw. The only people I could find here were military personnel. One of them refused to sign it but the other did! I think he did it so Id leave them alone.' },
+                // {src: 'assets/NYC_8.jpg', desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nunc id aliquam tincidunt, nisl nunc tincidunt urna, nec tincidunt nunc nunc nec nunc.' },
+                { src: 'assets/NYC_9.jpg', title: '#7 Governors Island', desc: 'Boss man gave us a half day at work and showed us around the island. I remember running down so we wouldnt miss the last ferry. Got the baseball signed by one of the ferry workers. I think this was the first person excited to sign it!' },
+                // {src: 'assets/NYC_10.jpg', desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nunc id aliquam tincidunt, nisl nunc tincidunt urna, nec tincidunt nunc nunc nec nunc.' },
+                { src: 'assets/NYC_11.jpg', title: 'L3 Brooklyn Pier', desc: 'The views of the manhattan skyline were amazing from here, such a lovely day for a walk. We came here after Governors Island.' },
+                { src: 'assets/NYC_12.jpg', title: '#8 Seamores', desc: 'Nice seafood restraunt I went with colleagues after the walk across Brooklyn Pier. I got the super friendly waiter to sign my baseball.' },
+                { src: 'assets/NYC_13.jpg', title: '#9 Katz Deli', desc: 'I dont know if I couldve called my trip complete without visiting here. It lived up to the hype, the manager was confused when I asked them to sign it but they were more than happy to.' },
+                { src: 'assets/NYC_14.jpg', title: '#10 Bryant Park', desc: 'My favourite park in the city, I got it signed by the security guard who was very happy to sign it and chat. Unfortunately on my second trip the park was turfed up when I tried showing it to my friend.' },
+                { src: 'assets/NYC_15.jpg', title: '#11 Chocolate and Winer bar', desc: 'Caught up with a girl I saw briefly in London here, she moved to New York a few months before. I remember saying off handnily that I would be in nyc next year, I didnt expect it to be actually true. I got the manager to sign it.' },
+                { src: 'assets/NYC_16.jpg', title: '#12 Luigis Pizza', desc: 'Local spot to me, Id just started my health journy and they sold a cauliflower pizza. Not as bad as it sounds. I got the pizza man to sign it, this was the kinda guy who I think of when I think of New York.' },
+                { src: 'assets/NYC_17.jpg', title: '#13 Japanese', desc: 'First time I went to a Japanese restraunt where they yelled my name as I walked in. Boss man took us out for a last dinner before we ended the work week. I got the manager to sign it here.' },
+                { src: 'assets/NYC_18.jpg', title: '#14 The Office', desc: 'The grad that started in the nyc office the same time I started in london took me out for a coffee. As a born and raised new yorker *cough* staten island *cough* I had to get him to sign it to represent the office. Shoutout Kuba' },
+                { src: 'assets/NYC_19.jpg', title: 'L4 The Helix', desc: 'No clue what its meant to be but it looks sick. Unfortunately it rained so we couldnt stand on it.' },
+                { src: 'assets/NYC_20.jpg', title: 'L5 Highline', desc: 'Converted subway line turned park. Nice walk, got a cool photo here.' },
+                { src: 'assets/NYC_21.jpg', title: '#15 Chelsea Market', desc: 'Shoutout Lefty from the Bronx haha. This dude was so nice and psyched to sign the baseball.' },
+                { src: 'assets/NYC_23.jpg', title: '#16 Little Island', desc: 'Manmade island, cool place to visit. I wanted to smoke up here but I spoke to the guy here and he pointed me to where I could and he signed my baseball. Shouthout MoCurly.' },
+                { src: 'assets/NYC_24.jpg', title: '#17 Times Square', desc: 'Overwhelming is an understatement. Caught a street performance here and got one of the dancers to sign it.' },
+                { src: 'assets/NYC_26.jpg', title: '#18 Central Park', desc: 'And so marks the last couple days of my trip. I remember getting blessed with 30c+ weather. A little cycle around central park hit the spot. One of the bike rental employees signed it. At this point I had enough signatures people were getting psyched to sign it!' },
+                // {src: 'assets/NYC_25.jpg', desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nunc id aliquam tincidunt, nisl nunc tincidunt urna, nec tincidunt nunc nunc nec nunc.' },
+                { src: 'assets/NYC_27.jpg', title: 'L6 NBC Studip', desc: 'I think it was the studio? Maybe just shop, got some friends and b99 merch here. Speaking of, I havent seen that b99 t-shirt in a while..' },
+                { src: 'assets/NYC_28.jpg', title: '#19 Top of the Rock', desc: 'Couldnt have asked for better weather. It was overcase the night before when I went with colleagues but I managed to get it solo the next day! Got one of the employees at the top to sign it.' },
+                { src: 'assets/NYC_29.jpg', title: '#20 MoMa', desc: 'Felt like I had to take this one in front of Starry Night. This was where I got my first outright rejection, luckily the second graph was happy to sign and we chatted about cricket.' },
+                { src: 'assets/NYC_30.jpg', title: '#21 NY Library', desc: 'I think I got it signed here? Looks cool' },
+                { src: 'assets/NYC_31.jpg', title: '#22 Statue of Liberty', desc: 'Oh man this one was painful. First I was late and in a rush, I ran to the spot and missed the boat and had to wait a couple hours in the hot sun with no shade or water. Then it turns out I booked the wrong boat and didnt get to go on the islan! Got it signed by the lady who gave me a cookie.' },
+                { src: 'assets/NYC_32.jpg', title: 'L7 Wall Street', desc: 'The mecca of finance, no signatures here but I got to see the bull.' },
+                { src: 'assets/NYC_33.jpg', title: 'L8 Trinity Church', desc: 'Decided not to get a signature here but I ventured inside and it was beautiful. I also went to Fraunces Tavern nearby.' },
+                { src: 'assets/NYC_34.jpg', title: '#23 Ground Zero', desc: 'Got here late in the evening but wow it was powerful seeing the scale of the memorial. I got a signature from a cop here, definitely the scariest one to get as he was sitting in the car, ended up being super friendly.' },
+                { src: 'assets/NYC_35.jpg', title: 'L9 One World Trading Centre', desc: 'Dont have much to say other than this was one big ass building.' },
+                { src: 'assets/NYC_36.jpg', title: '#24 Dominique Ansel Bakery', desc: 'The home of the cronut. I ended up visiting here 3 times haha. Once to get cronuts for the office, once for a cookie and lastly for the manager to sign the baseball.' },
+                { src: 'assets/NYC_37.jpg', title: '#25 Levain Bakery', desc: 'Oh man this cookie was bomb, I got the baseball signed by the guy who served me. Couldnt believe they had a gluten free option!' },
+                { src: 'assets/NYC_38.jpg', title: '#26 Washington Square', desc: 'This was cool, turns out it was graduation day when I came! I got one of the graduates to sign the baseball.' },
+                // {src: 'assets/NYC_39.jpg', desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nunc id aliquam tincidunt, nisl nunc tincidunt urna, nec tincidunt nunc nunc nec nunc.' },
+                { src: 'assets/NYC_40.jpg', title: 'L10 Joes Pizza', desc: 'One of New Yorks most iconic pizzerias. Originally I went to the Times Square one after walking for 2 hours in torrential rain. The vibe at the soho one was much nicer, or maybe it just wasnt raining.' },
+                { src: 'assets/NYC_41.jpg', title: 'L11 Friends Apartment', desc: 'This was cool, I was a big friends fan growing up so it was pretty surreal to be here. A bunch of people were taking photos outside.' },
+                { src: 'assets/NYC_42.jpg', title: 'L12 Barber Shop', desc: 'I needed to get my beard trimmed. Found a spot in Murray Hill, I think Jon Jones came here once. Unfortunatly I came up with the Baseball idea after I originally visited the shop.' },
+                { src: 'assets/NYC_43.jpg', title: '#27 Off Broadway', desc: 'Went to see drunk shakespeare. There was a bachelor party there that night, they got in a bidding war with another guy haha. The nights drunk actor, David, signed the baseball.' },
+                { src: 'assets/NYC_44.jpg', title: 'L13 UN', desc: 'Ended up reaching here at 10pm so didnt get to see it properly. Shouldve taken a photo at the bodega I visited afterwards.' },
+                { src: 'assets/NYC_45.jpg', title: 'L14 JFK', desc: 'And thus marks the end of a trip. A nice older gent on his wato to Florida saw me taking this photo and said he loved the idea!' },
+                // {src: 'assets/NYC_46.jpg', desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nunc id aliquam tincidunt, nisl nunc tincidunt urna, nec tincidunt nunc nunc nec nunc.' }
+                // Add more signature objects here, up to 26
+            ];
+
+
+            const itemsPerPage = 50;
+            let currentPage = 1;
+
+            function createGalleryItem(id, item) {
+                let sigStyle = `<h3> ${item.title}</h3>`;
+                if (item.title.includes('#')) {
+                    sigStyle = `<span style="font-family: 'Brush Script MT', cursive; font-size: 24px;"><h3>${item.title}</h3></span>`;
+
+                }
+                return $('<div>', {
+                    class: 'gallery-item',
+                    id: `gallery-item-${id}`,
+                    html: `
+                        <img src="${item.src}" alt="NYC Image" loading="lazy">
+                        <i class="icon expand fas fa-expand"></i>
+                        <div class="description">
+                            ${sigStyle}
+                            <p>${item.desc}</p>
+                        </div>
+                    `
+                });
+            }
+
+            function displayPage(items, $gallery, page) {
+                const start = (page - 1) * itemsPerPage;
+                const end = start + itemsPerPage;
+                $gallery.empty();
+                items.slice(start, end).forEach((item, index) => {
+                    $gallery.append(createGalleryItem(start + index, item));
+                });
+            }
+
+            function createPagination(items, $gallery, $pagination) {
+                const pageCount = Math.ceil(items.length / itemsPerPage);
+                $pagination.empty();
+                for (let i = 1; i <= pageCount; i++) {
+                    $pagination.append($('<button>', {
+                        text: i,
+                        click: function () {
+                            currentPage = i;
+                            displayPage(items, $gallery, currentPage);
+                        }
+                    }));
+                }
+            }
+
+            function setupGalleryInteractions() {
+                $('.gallery-item').on('mouseover', function (e) {
+                    e.stopPropagation();
+                    console.log('mouseover');
+                    $(this).find('.description').show();
+                    $(this).find('.expand').css({
+                        'color': 'black'
+                    });
+                });
+
+                $('.gallery-item').on('mouseleave', function (e) {
+                    e.stopPropagation();
+                    $(this).find('.description').hide();
+                    $(this).find('.expand').css({
+                        // 'z-index': '1',
+                        'color': 'white'
+                    });
+                });
+
+                $('.expand').on('click', function (e) {
+                    e.stopPropagation();
+                    const title = $(this).closest('.gallery-item').find('h3').text();
+                    const desc = $(this).closest('.gallery-item').find('p').text();
+                    const img = $(this).closest('.gallery-item').find('img').attr('src');
+                    showModal(title, desc, img);
+                });
+            }
+
+            function showModal(title, text, img) {
+                const modal = document.getElementById('signatureModal');
+                const modalContent = modal.querySelector('.modal-content');
+                const modalTitle = document.getElementById('modalTitle');
+                const modalText = document.getElementById('modalText');
+                const modalImage = document.getElementById('modalImageTag');
+
+                modalTitle.textContent = title;
+                modalText.textContent = text;
+                console.log(img);
+                modalImage.src = img;
+                modal.style.display = 'block';
+
+                // Trigger reflow to ensure the transition works
+                void modal.offsetWidth;
+
+                modal.classList.add('show');
+            }
+            const $signaturesGallery = $('#signatures-gallery');
+            const $signaturesPagination = $('#signatures-pagination');
+            createPagination(signatures, $signaturesGallery, $signaturesPagination);
+            displayPage(signatures, $signaturesGallery, currentPage);
+            setupGalleryInteractions();
+
+            const $locationsGallery = $('#locations-gallery');
+            const $locationsPagination = $('#locations-pagination');
+            createPagination(locations, $locationsGallery, $locationsPagination);
+            displayPage(locations, $locationsGallery, currentPage);
+        });
+        document.querySelector('.close').onclick = function () {
+            closeModal();
+        }
+
+        // Close the modal when clicking outside of it
+        window.onclick = function (event) {
+            const modal = document.getElementById('signatureModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('signatureModal');
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300); // Wait for the transition to finish before hiding the modal
+        }
+
+    </script>
+</body>
+
+</html>

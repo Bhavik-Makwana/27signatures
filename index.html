@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>27 Signatures</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="content">
+        <header>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h1><a href="index.html" style="text-decoration: none; color: inherit;"></a>27<span style="font-family: 'Brush Script MT', cursive; font-size: 36px;">Signatures</span></a></h1>
+                <nav>
+                    <ul>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+        
+        <section id="gallery" class="sphere-container">
+            <!-- The Three.js canvas will be inserted here -->
+        </section>
+    </div>
+    <div id="signatureModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Signature Details</h2>
+            <div id="modalImage">
+                <!-- Placeholder for image -->
+                <img id="modalImageTag" src="placeholder.jpg" alt="Signature Image">
+            </div>
+            <p id="modalText">Default text about the signature.</p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

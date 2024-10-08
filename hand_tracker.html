@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Tracker</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/handpose"></script>
+    <style>
+        body { margin: 0; display: flex; }
+        #video-container { position: relative; width: 50%; height: 100vh; }
+        #video, #hand-mesh { 
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            transform: scaleX(-1);
+        }
+        #output { width: 50%; height: 100vh; }
+        #info { position: absolute; top: 10px; left: 10px; color: white; font-family: Arial, sans-serif; z-index: 10; }
+    </style>
+</head>
+<body>
+    <div id="info">Hand Tracker</div>
+    <div id="video-container">
+        <video id="video" playsinline></video>
+        <canvas id="hand-mesh"></canvas>
+    </div>
+    <canvas id="output"></canvas>
+    <script src="hand_tracker.js"></script>
+</body>
+</html>
