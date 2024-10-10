@@ -53,6 +53,11 @@ const xLine = new THREE.Line(xGeometry, new THREE.LineBasicMaterial({ color: 0xf
 const yLine = new THREE.Line(yGeometry, new THREE.LineBasicMaterial({ color: 0x00ff00 }));
 const zLine = new THREE.Line(zGeometry, new THREE.LineBasicMaterial({ color: 0x0000ff }));
 
+let debugLinesVisible = false;
+
+// Add event listener to debug button
+document.getElementById('debugButton').addEventListener('click', toggleDebugLines);
+
 scene.add(xLine);
 scene.add(yLine);
 scene.add(zLine);
@@ -146,6 +151,27 @@ uvCoords.forEach((coord, index) => {
     sphere.add(marker);
     circles.push(marker);
 });
+
+function toggleDebugLines() {
+    debugLinesVisible = !debugLinesVisible;
+    if (debugLinesVisible) {
+        scene.add(xLine);
+        scene.add(yLine);
+        scene.add(zLine);
+        circles.forEach(circle => {
+            circle.material.opacity = 1;
+            circle.material.transparent = false;
+        });
+    } else {
+        scene.remove(xLine);
+        scene.remove(yLine);
+        scene.remove(zLine);
+        circles.forEach(circle => {
+            circle.material.opacity = 0;
+            circle.material.transparent = true;
+        });
+    }
+}
 
 // Variables for dragging
 let isDragging = false;
