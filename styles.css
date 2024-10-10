@@ -262,8 +262,15 @@ h1, h2 {
 
 .gallery-item img {
     width: 100%;
-    height: 300px;
-    object-fit: cover;
+    height: auto;
+    max-height: 300px;
+    object-fit: contain;
+}
+
+@media screen and (max-width: 768px) {
+    .gallery-item img {
+        max-height: none;
+    }
 }
 
 .description {
@@ -304,6 +311,15 @@ h1, h2 {
 }
 .pagination button {
     margin: 0 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.pagination button.active {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 5px;
     padding: 5px 10px;
     cursor: pointer;
 }

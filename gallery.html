@@ -126,7 +126,7 @@
             ];
 
 
-            const itemsPerPage = 50;
+            const itemsPerPage = window.innerWidth <= 768 ? 10 : 50;
             let currentPage = 1;
 
             function createGalleryItem(id, item) {
@@ -149,6 +149,33 @@
                 });
             }
 
+            // function displayPage(items, $gallery, page) {
+            //     const start = (page - 1) * itemsPerPage;
+            //     const end = start + itemsPerPage;
+            //     $gallery.empty();
+            //     items.slice(start, end).forEach((item, index) => {
+            //         $gallery.append(createGalleryItem(start + index, item));
+            //     });
+            // }
+
+            // function createPagination(items, $gallery, $pagination) {
+            //     const pageCount = Math.ceil(items.length / itemsPerPage);
+            //     $pagination.empty();
+            //     for (let i = 1; i <= pageCount; i++) {
+            //         $pagination.append($('<button>', {
+            //             text: i,
+            //             click: function () {
+            //                 currentPage = i;
+            //                 displayPage(items, $gallery, currentPage);
+            //             }
+            //         }));
+            //     }
+            // }
+            function updatePaginationHighlight() {
+                $('.pagination button').removeClass('active');
+                $(`.pagination button:nth-child(${currentPage})`).addClass('active');
+            }
+
             function displayPage(items, $gallery, page) {
                 const start = (page - 1) * itemsPerPage;
                 const end = start + itemsPerPage;
@@ -156,6 +183,8 @@
                 items.slice(start, end).forEach((item, index) => {
                     $gallery.append(createGalleryItem(start + index, item));
                 });
+                updatePaginationHighlight();
+                setupGalleryInteractions();
             }
 
             function createPagination(items, $gallery, $pagination) {
@@ -170,8 +199,8 @@
                         }
                     }));
                 }
+                updatePaginationHighlight();
             }
-
             function setupGalleryInteractions() {
                 $('.gallery-item').on('mouseover', function (e) {
                     e.stopPropagation();
